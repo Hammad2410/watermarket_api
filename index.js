@@ -6,6 +6,7 @@ var dir = path.join(__dirname, '/uploads');
 
 const adminRoute = require('./src/routes/admin')
 
+
 app.use('/api/admin', adminRoute)
 app.use('/api/auth', authRoute);
 app.use(express.static(dir));
