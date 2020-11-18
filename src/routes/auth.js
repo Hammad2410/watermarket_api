@@ -138,8 +138,11 @@ authRoute.post('registerDistributor', (req, res) => {
 authRoute.post('/upload', (req, res) => {
     var phone = req.body.phone
 
+    console.log(req.body.commercial_register)
 
-    fs.writeFileSync(`../uploads/commercial_register/lll.jpg`, req.body.commercial_register, (response) => {
+    var bitmap = new Buffer(req.body.commercial_register, 'base64');
+
+    fs.writeFileSync('uploads/commercial_register/image.jpeg', bitmap, (response) => {
         console.log(response)
     })
 
