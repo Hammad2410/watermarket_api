@@ -1,5 +1,4 @@
 var express = require('express')
-const con = require('../configs/db')
 var authRoute = express.Router()
 var connection = require('../configs/db')
 var sha1 = require('sha1')
@@ -138,6 +137,7 @@ authRoute.post('/registerDistributor', (req, res) => {
     var brands = req.body.brands
     var about = req.body.about
     var otp = 111111
+
 
 
     if (service_type && phone && name && email && password && commercial_register && national_id && location && certificates && brands && about) {
@@ -404,6 +404,113 @@ authRoute.post('/registerRepresentative', (req, res) => {
 
 })
 
+authRoute.post('/signin', (req, res) => {
+    var phone = req.body.phone
+    var otp = 111111
+
+    if (phone) {
+        connection.query("SELECT * FROM buyers WHERE phone = $1", [phone], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                if (result.rows.length == 0) {
+                    res.send({
+                        success: false,
+                        message: 'User does not exists'
+                    })
+                }
+                else {
+                    connection.query("UPDATE buyers SET otp = $1 WHERE phone = $2", [otp, phone], (error1, result1) => {
+                        if (error1) {
+                            res.send({
+                                success: false,
+                                message: error1.message
+                            })
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                message: "otp sent"
+                            })
+                        }
+                    })
+                }
+            }
+        })
+    }
+    else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+})
+
+authRoute.post('/verifyUser', (req, res) => {
+    var phone = req.body.phone
+    var code = req.body.code
+
+    console.log(code)
+
+    if (phone && code) {
+        connection.query("SELECT * FROM buyers WHERE phone = $1 AND otp = $2", [phone, code], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                if (result.rows.length > 0) {
+
+                    connection.query("SELECT * FROM distributors WHERE buyer_id = $1", [result.rows[0].id], (error1, result1) => {
+                        if (error1) {
+                            res.send({
+                                success: false,
+                                message: error1.message
+                            })
+                        }
+                        else {
+                            connection.query("SELECT * FROM representatives WHERE buyer_id = $1", [result.rows[0].id], (error2, result2) => {
+                                if (error2) {
+                                    res.send({
+                                        success: false,
+                                        message: error2.message
+                                    })
+                                }
+                                else {
+                                    res.send({
+                                        success: true,
+                                        message: 'User loggged in',
+                                        buyer: result.rows[0],
+                                        distributor: result1.rows[0],
+                                        representative: result2.rows[0]
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+                else {
+                    res.send({
+                        success: false,
+                        message: "Invalid Code"
+                    })
+                }
+            }
+        })
+    }
+    else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+})
 
 
 
