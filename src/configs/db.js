@@ -3,7 +3,7 @@ var { Client } = require('pg');
 //const connectionString = 'postgres://postgres:root@localhost:5432/moneyUp'
 
 var con = new Client({
-    user: "dbadmin",
+    user: "watermarket",
     password: "admin123",
     database: "postgres",
     port: 5432,
