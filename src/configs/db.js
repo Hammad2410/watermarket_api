@@ -8,7 +8,7 @@ var con = new Client({
     database: "postgres",
     port: 5432,
     host: "80.209.226.8",
-    ssl: { rejectUnauthorized: false }
+    //ssl: { rejectUnauthorized: true }
 
 });
 
