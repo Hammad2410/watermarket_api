@@ -1,13 +1,15 @@
 var express = require('express')
 var connection = require('../configs/db')
 var adminRoute = express.Router()
-
+var jwt = require('jsonwebtoken')
 
 
 adminRoute.post("/login", (req, res) => {
 
     var email = req.body.email
     var password = req.body.password
+    var token = jwt.sign({ email, password }, "adminToken", { expiresIn: '10000s' })
+
 
     connection.query("SELECT * FROM admin WHERE email= $1 AND password=$2", [email, password], (error, result) => {
 
@@ -28,7 +30,8 @@ adminRoute.post("/login", (req, res) => {
                 res.send({
                     success: true,
                     message: "Login sucessfully",
-                    user: result.rows[0]
+                    user: result.rows[0],
+                    token: token
                 })
             }
         }

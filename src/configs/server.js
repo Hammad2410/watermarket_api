@@ -13,12 +13,14 @@ app.use(upload.array());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
 
+var ca = [fs.readFileSync(path.resolve(__dirname, "domain.tld.ca-bundle"), 'utf8')]
 var privateKey = fs.readFileSync(path.resolve(__dirname, "domain.key"), 'utf8');
 var certificate = fs.readFileSync(path.resolve(__dirname, "domain.crt"), 'utf8');
 
 const port = process.env.PORT || 3000;
 
 const option = {
+    ca: ca,
     cert: certificate,
     key: privateKey
 }
