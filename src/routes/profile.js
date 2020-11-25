@@ -282,4 +282,114 @@ profileRoute.post("/updateDocumentInfo", (req, res) => {
     }
 })
 
+profileRoute.post("/getMyBrands", (req, res) => {
+    var id = req.body.id
+
+    if (id) {
+        connection.query("SELECT * FROM brands WHERE distributor_id = $1", [id], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                res.send({
+                    success: true,
+                    message: "brands fetched",
+                    brands: result.rows
+                })
+            }
+        })
+    } else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+
+})
+
+profileRoute.post("/getMyCertificates", (req, res) => {
+    var id = req.body.id
+
+    if (id) {
+        connection.query("SELECT * FROM certificates WHERE distributer_id = $1", [id], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                res.send({
+                    success: true,
+                    message: "certificates fetched",
+                    certificates: result.rows
+                })
+            }
+        })
+    } else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+
+})
+
+profileRoute.post("/removeCertificate", (req, res) => {
+    var id = req.body.certificate_id
+
+    if (id) {
+        connection.query("DELETE FROM certificates WHERE id = $1", [id], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                res.send({
+                    success: true,
+                    message: "certificate removed"
+                })
+            }
+        })
+    } else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+
+})
+
+profileRoute.post("/removeBrand", (req, res) => {
+    var id = req.body.brand_id
+
+    if (id) {
+        connection.query("DELETE FROM brands WHERE id = $1", [id], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                res.send({
+                    success: true,
+                    message: "brand removed"
+                })
+            }
+        })
+    } else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+
+})
+
 module.exports = profileRoute
