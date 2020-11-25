@@ -174,92 +174,109 @@ authRoute.post('/registerDistributor', (req, res) => {
                                         })
                                     }
                                     else {
-                                        var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
-                                        var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
+                                        try {
+                                            var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
+                                            var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
 
-                                        connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result2.rows[0].id], (error3, result3) => {
-                                            if (error3) {
-                                                res.send({
-                                                    success: false,
-                                                    message: error3.message
-                                                })
-                                            }
-                                            else {
-                                                certificates.map((cert, index) => {
-                                                    console.log(index)
-                                                    var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}.jpeg` })
-                                                    connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [result3.rows[0].id, `certificates\\${certificate_path.fileName}`], (error4, result4) => {
-                                                        if (error4) {
-                                                            res.send({
-                                                                success: false,
-                                                                message: error4.message
-                                                            })
-                                                        }
+                                            connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result2.rows[0].id], (error3, result3) => {
+                                                if (error3) {
+                                                    res.send({
+                                                        success: false,
+                                                        message: error3.message
                                                     })
-                                                })
-                                                brands.map((brand, index) => {
-                                                    var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}.jpeg` })
-                                                    connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [result3.rows[0].id, `brands\\${brand_path.fileName}`], (error4, result4) => {
-                                                        if (error4) {
-                                                            res.send({
-                                                                success: false,
-                                                                message: error4.message
-                                                            })
-                                                        }
+                                                }
+                                                else {
+                                                    certificates.map((cert, index) => {
+                                                        console.log(index)
+                                                        var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}.jpeg` })
+                                                        connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [result3.rows[0].id, `certificates\\${certificate_path.fileName}`], (error4, result4) => {
+                                                            if (error4) {
+                                                                res.send({
+                                                                    success: false,
+                                                                    message: error4.message
+                                                                })
+                                                            }
+                                                        })
                                                     })
-                                                })
-                                                res.send({
-                                                    success: true,
-                                                    messsage: 'distributor added'
-                                                })
-                                            }
-                                        })
+                                                    brands.map((brand, index) => {
+                                                        var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}.jpeg` })
+                                                        connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [result3.rows[0].id, `brands\\${brand_path.fileName}`], (error4, result4) => {
+                                                            if (error4) {
+                                                                res.send({
+                                                                    success: false,
+                                                                    message: error4.message
+                                                                })
+                                                            }
+                                                        })
+                                                    })
+                                                    res.send({
+                                                        success: true,
+                                                        messsage: 'distributor added'
+                                                    })
+                                                }
+                                            })
+                                        } catch (baseError) {
+                                            res.send({
+                                                success: false,
+                                                message: baseError.message
+                                            })
+                                        }
                                     }
+
                                 })
                             }
                             else {
-                                var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
-                                var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
+                                try {
+                                    var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
+                                    var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
 
-                                console.log(result1.rows)
+                                    console.log(result1.rows)
 
-                                connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result1.rows[0].id], (error2, result2) => {
-                                    if (error2) {
-                                        res.send({
-                                            success: false,
-                                            message: error2.message
-                                        })
-                                    }
-                                    else {
-                                        certificates.map((cert, index) => {
-                                            console.log(index)
-                                            var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}.jpeg` })
-                                            connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [result2.rows[0].id, `certificates\\${certificate_path.fileName}`], (error3, result3) => {
-                                                if (error3) {
-                                                    res.send({
-                                                        success: false,
-                                                        message: error3.message
-                                                    })
-                                                }
+                                    connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result1.rows[0].id], (error2, result2) => {
+                                        if (error2) {
+                                            res.send({
+                                                success: false,
+                                                message: error2.message
                                             })
-                                        })
-                                        brands.map((brand, index) => {
-                                            var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}.jpeg` })
-                                            connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [result2.rows[0].id, `brands\\${brand_path.fileName}`], (error3, result3) => {
-                                                if (error3) {
-                                                    res.send({
-                                                        success: false,
-                                                        message: error3.message
-                                                    })
-                                                }
+                                        }
+                                        else {
+                                            certificates.map((cert, index) => {
+                                                console.log(index)
+                                                var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}.jpeg` })
+                                                connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [result2.rows[0].id, `certificates\\${certificate_path.fileName}`], (error3, result3) => {
+                                                    if (error3) {
+                                                        res.send({
+                                                            success: false,
+                                                            message: error3.message
+                                                        })
+                                                    }
+                                                })
                                             })
-                                        })
-                                        res.send({
-                                            success: true,
-                                            messsage: 'distributor added'
-                                        })
-                                    }
-                                })
+                                            brands.map((brand, index) => {
+                                                var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}.jpeg` })
+                                                connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [result2.rows[0].id, `brands\\${brand_path.fileName}`], (error3, result3) => {
+                                                    if (error3) {
+                                                        res.send({
+                                                            success: false,
+                                                            message: error3.message
+                                                        })
+                                                    }
+                                                })
+                                            })
+                                            res.send({
+                                                success: true,
+                                                messsage: 'distributor added'
+                                            })
+
+                                        }
+
+                                    })
+                                } catch (baseError) {
+                                    res.send({
+                                        success: false,
+                                        message: baseError.message
+                                    })
+                                }
                             }
                         }
                     })
@@ -335,59 +352,75 @@ authRoute.post('/registerRepresentative', (req, res) => {
                                         })
                                     }
                                     else {
+                                        try {
 
-                                        var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
-                                        var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
-                                        var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
-                                        var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
-                                        var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
-                                        var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
+                                            var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
+                                            var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
+                                            var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
+                                            var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
+                                            var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
+                                            var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
 
-                                        connection.query('INSERT INTO representatives(name, id_number, nationality, phone, email, dob, profile_image, car_type, car_model, manufacture_year, licence_plate,national_id,driving_licence, vehicle_registration, car_front, car_back, lettering, vehicle_type,iban,address, buyer_id ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)',
-                                            [name, id_number, nationality, phone, email, dob, profile_image_path.fileName, car_type, car_model, manufacturing_year, licence_plate, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, lettering, vehicle_type, iban, address, result2.rows[0].id], (error3, result3) => {
-                                                if (error3) {
-                                                    res.send({
-                                                        success: false,
-                                                        message: error3.message
-                                                    })
-                                                }
-                                                else {
-                                                    res.send({
-                                                        success: true,
-                                                        message: "Representative added"
-                                                    })
-                                                }
+                                            connection.query('INSERT INTO representatives(name, id_number, nationality, phone, email, dob, profile_image, car_type, car_model, manufacture_year, licence_plate,national_id,driving_licence, vehicle_registration, car_front, car_back, lettering, vehicle_type,iban,address, buyer_id ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)',
+                                                [name, id_number, nationality, phone, email, dob, profile_image_path.fileName, car_type, car_model, manufacturing_year, licence_plate, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, lettering, vehicle_type, iban, address, result2.rows[0].id], (error3, result3) => {
+                                                    if (error3) {
+                                                        res.send({
+                                                            success: false,
+                                                            message: error3.message
+                                                        })
+                                                    }
+                                                    else {
+                                                        res.send({
+                                                            success: true,
+                                                            message: "Representative added"
+                                                        })
+                                                    }
 
 
+                                                })
+                                        } catch (baseError) {
+                                            res.send({
+                                                success: false,
+                                                message: baseError.message
                                             })
+                                        }
                                     }
                                 })
 
                             } else {
-                                var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
-                                var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
-                                var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
-                                var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
-                                var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
-                                var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
+                                try {
+                                    var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
+                                    var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
+                                    var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
+                                    var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
+                                    var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
+                                    var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
 
-                                connection.query('INSERT INTO representatives(name, id_number, nationality, phone, email, dob, profile_image, car_type, car_model, manufacture_year, licence_plate,national_id,driving_licence, vehicle_registration, car_front, car_back, lettering, vehicle_type, iban,address, buyer_id ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)',
-                                    [name, id_number, nationality, phone, email, dob, profile_image_path.fileName, car_type, car_model, manufacturing_year, licence_plate, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, lettering, vehicle_type, iban, address, result1.rows[0].id], (error3, result3) => {
-                                        if (error3) {
-                                            res.send({
-                                                success: false,
-                                                message: error3.message
-                                            })
-                                        }
-                                        else {
-                                            res.send({
-                                                success: true,
-                                                message: "Representative added"
-                                            })
-                                        }
+                                    connection.query('INSERT INTO representatives(name, id_number, nationality, phone, email, dob, profile_image, car_type, car_model, manufacture_year, licence_plate,national_id,driving_licence, vehicle_registration, car_front, car_back, lettering, vehicle_type, iban,address, buyer_id ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)',
+                                        [name, id_number, nationality, phone, email, dob, profile_image_path.fileName, car_type, car_model, manufacturing_year, licence_plate, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, lettering, vehicle_type, iban, address, result1.rows[0].id], (error3, result3) => {
+                                            if (error3) {
+                                                res.send({
+                                                    success: false,
+                                                    message: error3.message
+                                                })
+                                            }
+                                            else {
+                                                res.send({
+                                                    success: true,
+                                                    message: "Representative added"
+                                                })
+                                            }
 
 
+                                        })
+
+                                }
+                                catch (baseError) {
+                                    res.send({
+                                        success: false,
+                                        message: baseError.message
                                     })
+                                }
                             }
                         }
                     })

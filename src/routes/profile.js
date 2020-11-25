@@ -62,46 +62,53 @@ profileRoute.post('/updateDistributorProfile', (req, res) => {
                 })
             }
             else if (result2.rows.length > 0) {
-                var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
-                var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
+                try {
+                    var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
+                    var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
 
-                connection.query("UPDATE distributors SET service_type = $1 ,name = $2,email = $3,phone = $4, password = $5,commercial_register = $6,national_id = $7,about = $8,type = $9 WHERE id = $10 ", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", id], (error3, result3) => {
-                    if (error3) {
-                        res.send({
-                            success: false,
-                            message: error3.message
-                        })
-                    }
-                    else {
-                        certificates.map((cert, index) => {
-                            console.log(index)
-                            var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}_${new Date().getMilliseconds()}.jpeg` })
-                            connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [id, `certificates\\${certificate_path.fileName}`], (error4, result4) => {
-                                if (error4) {
-                                    res.send({
-                                        success: false,
-                                        message: error4.message
-                                    })
-                                }
+                    connection.query("UPDATE distributors SET service_type = $1 ,name = $2,email = $3,phone = $4, password = $5,commercial_register = $6,national_id = $7,about = $8,type = $9 WHERE id = $10 ", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", id], (error3, result3) => {
+                        if (error3) {
+                            res.send({
+                                success: false,
+                                message: error3.message
                             })
-                        })
-                        brands.map((brand, index) => {
-                            var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}_${new Date().getMilliseconds()}.jpeg` })
-                            connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [id, `brands\\${brand_path.fileName}`], (error4, result4) => {
-                                if (error4) {
-                                    res.send({
-                                        success: false,
-                                        message: error4.message
-                                    })
-                                }
+                        }
+                        else {
+                            certificates.map((cert, index) => {
+                                console.log(index)
+                                var certificate_path = base64ToImage(cert, "uploads/certificates/", { fileName: `${email}_${index}_${new Date().getMilliseconds()}.jpeg` })
+                                connection.query("INSERT INTO certificates(distributer_id, url) VALUES($1,$2)", [id, `certificates\\${certificate_path.fileName}`], (error4, result4) => {
+                                    if (error4) {
+                                        res.send({
+                                            success: false,
+                                            message: error4.message
+                                        })
+                                    }
+                                })
                             })
-                        })
-                        res.send({
-                            success: true,
-                            messsage: 'distributor updated'
-                        })
-                    }
-                })
+                            brands.map((brand, index) => {
+                                var brand_path = base64ToImage(brand, "uploads/brands/", { fileName: `${email}_${index}_${new Date().getMilliseconds()}.jpeg` })
+                                connection.query("INSERT INTO brands(distributor_id,url) VALUES($1,$2)", [id, `brands\\${brand_path.fileName}`], (error4, result4) => {
+                                    if (error4) {
+                                        res.send({
+                                            success: false,
+                                            message: error4.message
+                                        })
+                                    }
+                                })
+                            })
+                            res.send({
+                                success: true,
+                                messsage: 'distributor updated'
+                            })
+                        }
+                    })
+                } catch (baseError) {
+                    res.send({
+                        success: false,
+                        message: baseError.message
+                    })
+                }
             }
             else {
                 res.send({
@@ -192,21 +199,28 @@ profileRoute.post("/updateVehicleInfo", (req, res) => {
                 })
             }
             else if (result.rows.length > 0) {
-                var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
-                connection.query("UPDATE representatives SET profile_image = $1, car_type = $2, car_model = $3, manufacture_year = $4, lettering = $5, vehicle_type = $6, area = $7, city = $8 WHERE id = $9", [profile_image_path.fileName, car_type, car_model, manufacturing_year, lettering, vehicle_type, area, city, id], (error1, result1) => {
-                    if (error1) {
-                        res.send({
-                            success: false,
-                            message: error1.message
-                        })
-                    }
-                    else {
-                        res.send({
-                            success: true,
-                            message: 'profile updated'
-                        })
-                    }
-                })
+                try {
+                    var profile_image_path = base64ToImage(profile_image, "uploads/profile_image/", { fileName: `${email}.jpeg` })
+                    connection.query("UPDATE representatives SET profile_image = $1, car_type = $2, car_model = $3, manufacture_year = $4, lettering = $5, vehicle_type = $6, area = $7, city = $8 WHERE id = $9", [profile_image_path.fileName, car_type, car_model, manufacturing_year, lettering, vehicle_type, area, city, id], (error1, result1) => {
+                        if (error1) {
+                            res.send({
+                                success: false,
+                                message: error1.message
+                            })
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                message: 'profile updated'
+                            })
+                        }
+                    })
+                } catch (baseError) {
+                    res.send({
+                        success: false,
+                        message: baseError.message
+                    })
+                }
             }
             else {
                 res.send({
@@ -214,6 +228,7 @@ profileRoute.post("/updateVehicleInfo", (req, res) => {
                     message: 'user does not exists'
                 })
             }
+
         })
     }
     else {
@@ -245,26 +260,35 @@ profileRoute.post("/updateDocumentInfo", (req, res) => {
                 })
             }
             else if (result.rows.length > 0) {
-                var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
-                var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
-                var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
-                var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
-                var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
+                try {
 
-                connection.query("UPDATE representatives SET iban = $1, address = $2, national_id = $3, driving_licence = $4, vehicle_registration = $5, car_front = $6, car_back = $7 WHERE id = $8", [iban, address, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, id], (error1, result1) => {
-                    if (error1) {
-                        res.send({
-                            success: false,
-                            message: error1.message
-                        })
-                    }
-                    else {
-                        res.send({
-                            success: true,
-                            message: 'profile updated'
-                        })
-                    }
-                })
+
+                    var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_representive.jpeg` })
+                    var driving_licence_path = base64ToImage(driving_licence, "uploads/driving_licence/", { fileName: `${email}.jpeg` })
+                    var vehicle_registeration_path = base64ToImage(vehicle_registeration, "uploads/vehicle_registeration/", { fileName: `${email}.jpeg` })
+                    var car_front_path = base64ToImage(car_front, "uploads/car_front/", { fileName: `${email}.jpeg` })
+                    var car_back_path = base64ToImage(car_back, "uploads/car_back/", { fileName: `${email}.jpeg` })
+
+                    connection.query("UPDATE representatives SET iban = $1, address = $2, national_id = $3, driving_licence = $4, vehicle_registration = $5, car_front = $6, car_back = $7 WHERE id = $8", [iban, address, national_id_path.fileName, driving_licence_path.fileName, vehicle_registeration_path.fileName, car_front_path.fileName, car_back_path.fileName, id], (error1, result1) => {
+                        if (error1) {
+                            res.send({
+                                success: false,
+                                message: error1.message
+                            })
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                message: 'profile updated'
+                            })
+                        }
+                    })
+                } catch (baseError) {
+                    res.send({
+                        success: false,
+                        message: baseError.message
+                    })
+                }
             }
             else {
                 res.send({
