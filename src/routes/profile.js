@@ -416,4 +416,64 @@ profileRoute.post("/removeBrand", (req, res) => {
 
 })
 
+profileRoute.post('/getUserById', (req, res) => {
+    var id = req.body.id
+
+    if (id) {
+        connection.query("SELECT * FROM buyers WHERE id = $1 ", [id], (error, result) => {
+            if (error) {
+                res.send({
+                    success: false,
+                    message: error.message
+                })
+            }
+            else {
+                if (result.rows.length > 0) {
+
+                    connection.query("SELECT * FROM distributors WHERE buyer_id = $1", [result.rows[0].id], (error1, result1) => {
+                        if (error1) {
+                            res.send({
+                                success: false,
+                                message: error1.message
+                            })
+                        }
+                        else {
+                            connection.query("SELECT * FROM representatives WHERE buyer_id = $1", [result.rows[0].id], (error2, result2) => {
+                                if (error2) {
+                                    res.send({
+                                        success: false,
+                                        message: error2.message
+                                    })
+                                }
+                                else {
+                                    res.send({
+                                        success: true,
+                                        message: 'User fetched',
+                                        buyer: result.rows[0],
+                                        distributor: result1.rows[0],
+                                        representative: result2.rows[0]
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+                else {
+                    res.send({
+                        success: false,
+                        message: "User Not found"
+                    })
+                }
+            }
+        })
+    }
+    else {
+        res.send({
+            success: false,
+            message: "Missing Fields"
+        })
+    }
+})
+
+
 module.exports = profileRoute
