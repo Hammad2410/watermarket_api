@@ -211,7 +211,8 @@ authRoute.post('/registerDistributor', (req, res) => {
                                                     })
                                                     res.send({
                                                         success: true,
-                                                        messsage: 'distributor added'
+                                                        messsage: 'distributor added',
+                                                        id: result2.rows[0].id
                                                     })
                                                 }
                                             })
@@ -265,7 +266,8 @@ authRoute.post('/registerDistributor', (req, res) => {
                                             })
                                             res.send({
                                                 success: true,
-                                                messsage: 'distributor added'
+                                                messsage: 'distributor added',
+                                                id: result1.rows[0].id
                                             })
 
                                         }
@@ -372,7 +374,8 @@ authRoute.post('/registerRepresentative', (req, res) => {
                                                     else {
                                                         res.send({
                                                             success: true,
-                                                            message: "Representative added"
+                                                            message: "Representative added",
+                                                            id: result2.rows[0].id
                                                         })
                                                     }
 
@@ -407,7 +410,8 @@ authRoute.post('/registerRepresentative', (req, res) => {
                                             else {
                                                 res.send({
                                                     success: true,
-                                                    message: "Representative added"
+                                                    message: "Representative added",
+                                                    id: result1.rows[0].id
                                                 })
                                             }
 
