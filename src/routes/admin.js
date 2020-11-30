@@ -125,4 +125,33 @@ adminRoute.post("/getallusers", (req, res) => {
     })
 })
 
+adminRoute.get('/getUsers', (req, res) => {
+
+    connection.query("SELECT b.id as buyer, d.id as distributor , r.id as representative, b.email as email ,b.name as name, b.status FROM public.buyers as b LEFT JOIN public.distributors as d ON b.id = d.buyer_id LEFT JOIN public.representatives as r ON b.id = r.buyer_id", (error, result) => {
+        if (error) {
+            res.send({
+                success: false,
+                message: error.message
+            })
+        }
+        else {
+
+            console.log("Result: ", result.rows)
+
+            // var users = result.rows.map((user) => {
+            //     return ({
+            //         buyer: JSON.parse(user.buyer),
+
+            //     })
+            // })
+
+            res.send({
+                success: true,
+                users: result.rows
+            })
+        }
+    })
+
+})
+
 module.exports = adminRoute
