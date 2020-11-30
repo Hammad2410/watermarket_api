@@ -178,7 +178,7 @@ authRoute.post('/registerDistributor', (req, res) => {
                                             var commercial_register_path = base64ToImage(commercial_register, "uploads/commercial_register/", { fileName: `${email}.jpeg` })
                                             var national_id_path = base64ToImage(national_id, "uploads/national_id/", { fileName: `${email}_distributor.jpeg` })
 
-                                            connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result2.rows[0].id], (error3, result3) => {
+                                            connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,status,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result2.rows[0].id], (error3, result3) => {
                                                 if (error3) {
                                                     res.send({
                                                         success: false,
@@ -233,7 +233,7 @@ authRoute.post('/registerDistributor', (req, res) => {
 
                                     console.log(result1.rows)
 
-                                    connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,type,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result1.rows[0].id], (error2, result2) => {
+                                    connection.query("INSERT INTO distributors(service_type,name,email,phone, password,commercial_register,national_id,about,status,buyer_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) returning id", [service_type, name, email, phone, password, `commercial_register\\${commercial_register_path.fileName}`, `national_id\\${national_id_path.fileName}`, about, "pending", result1.rows[0].id], (error2, result2) => {
                                         if (error2) {
                                             res.send({
                                                 success: false,
